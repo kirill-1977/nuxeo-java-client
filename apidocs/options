@@ -1,0 +1,24 @@
+-classpath
+'/Users/vladimirpasquier/.m2/repository/org/apache/commons/commons-lang3/3.3.2/commons-lang3-3.3.2.jar:/Users/vladimirpasquier/.m2/repository/commons-io/commons-io/2.4/commons-io-2.4.jar:/Users/vladimirpasquier/.m2/repository/org/apache/logging/log4j/log4j-api/2.4.1/log4j-api-2.4.1.jar:/Users/vladimirpasquier/.m2/repository/org/apache/logging/log4j/log4j-core/2.4.1/log4j-core-2.4.1.jar:/Users/vladimirpasquier/.m2/repository/com/squareup/okhttp3/okhttp/3.0.0-RC1/okhttp-3.0.0-RC1.jar:/Users/vladimirpasquier/.m2/repository/com/fasterxml/jackson/core/jackson-databind/2.7.4/jackson-databind-2.7.4.jar:/Users/vladimirpasquier/.m2/repository/javax/mail/mail/1.4.7/mail-1.4.7.jar:/Users/vladimirpasquier/.m2/repository/com/fasterxml/jackson/core/jackson-annotations/2.7.4/jackson-annotations-2.7.4.jar:/Users/vladimirpasquier/.m2/repository/com/squareup/retrofit2/retrofit/2.0.2/retrofit-2.0.2.jar:/Users/vladimirpasquier/.m2/repository/com/squareup/okio/okio/1.6.0/okio-1.6.0.jar:/Users/vladimirpasquier/.m2/repository/javax/activation/activation/1.1/activation-1.1.jar:/Users/vladimirpasquier/.m2/repository/com/fasterxml/jackson/core/jackson-core/2.7.4/jackson-core-2.7.4.jar:/Users/vladimirpasquier/.m2/repository/com/google/guava/guava/18.0/guava-18.0.jar'
+-encoding
+'UTF-8'
+-protected
+-sourcepath
+'/Users/vladimirpasquier/nuxeo/addons/nuxeo-java-client/nuxeo-java-client/src/main/java:/Users/vladimirpasquier/nuxeo/addons/nuxeo-java-client/nuxeo-java-client/target/generated-sources/annotations'
+-author
+-bottom
+'Copyright &#169; 2016 <a href="http://www.nuxeo.com">Nuxeo SA</a>. All rights reserved.'
+-charset
+'UTF-8'
+-d
+'/Users/vladimirpasquier/nuxeo/addons/nuxeo-java-client/nuxeo-java-client/target/site/apidocs'
+-docencoding
+'UTF-8'
+-doctitle
+'Nuxeo Java Client 2.3-SNAPSHOT API'
+-linkoffline
+'http://docs.oracle.com/javase/8/docs/api' '/Users/vladimirpasquier/nuxeo/addons/nuxeo-java-client/nuxeo-java-client/target/javadoc-bundle-options'
+-use
+-version
+-windowtitle
+'Nuxeo Java Client 2.3-SNAPSHOT API'
