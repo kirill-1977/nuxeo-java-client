@@ -27,12 +27,15 @@ import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import org.junit.Before;
 import org.junit.Ignore;
@@ -60,6 +63,7 @@ import org.nuxeo.runtime.test.runner.Deploy;
 import org.nuxeo.runtime.test.runner.Features;
 import org.nuxeo.runtime.test.runner.FeaturesRunner;
 import org.nuxeo.runtime.test.runner.Jetty;
+import org.nuxeo.runtime.test.runner.LocalDeploy;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -75,6 +79,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Jetty(port = 18090)
 @Deploy({ "org.nuxeo.ecm.core.io", "org.nuxeo.ecm.permissions" })
 @RepositoryConfig(cleanup = Granularity.METHOD, init = RestServerInit.class)
+@LocalDeploy("org.nuxeo.java.client.test:test-core-types-contrib.xml")
 public class TestRepository extends TestBase {
 
     @Before
@@ -442,6 +447,68 @@ public class TestRepository extends TestBase {
         assertEquals(folder.getUid(), document.getParentRef());
         assertEquals("/folder_1/file", document.getPath());
         assertEquals("file", document.getTitle());
+    }
+
+    /**
+     * Dates can be handled properly if and only if the date is given as {@link java.lang.String}.
+     */
+    @Test
+    public void itCanHandleDateAsString() {
+        GregorianCalendar calendar = new GregorianCalendar(2017, Calendar.MAY, 4, 3, 2, 1);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSX");
+        calendar.setTimeZone(TimeZone.getTimeZone("UTC"));
+        formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+        String calendarStr = formatter.format(calendar.getTime());
+        assertEquals("2017-05-04T03:02:01.00Z", calendarStr);
+
+        Document birthday = new Document("Tom's Birthday", "Birthday");
+        birthday.set("dc:title", "Tom's Birthday");
+        birthday.set("bd:name", "Tom");
+        birthday.set("bd:date", calendarStr);
+        birthday = nuxeoClient.repository().createDocumentByPath("/", birthday);
+        assertEquals("Birthday", birthday.getType());
+        assertEquals("Tom", birthday.getPropertyValue("bd:name"));
+        assertEquals("2017-05-04T03:02:01.00Z", birthday.getPropertyValue("bd:date"));
+
+        calendar.add(Calendar.MONTH, 1);
+        calendarStr = formatter.format(calendar.getTime());
+        assertEquals("2017-06-04T03:02:01.00Z", calendarStr);
+        birthday.set("bd:date", calendarStr);
+        birthday = nuxeoClient.repository().updateDocument(birthday);
+        assertEquals("2017-06-04T03:02:01.00Z", birthday.getPropertyValue("bd:date"));
+
+        formatter.setTimeZone(TimeZone.getTimeZone("GMT+1:00"));
+        calendarStr = formatter.format(calendar.getTime());
+        assertEquals("2017-06-04T04:02:01.00+01", calendarStr);
+        birthday.set("bd:date", calendarStr);
+        birthday = nuxeoClient.repository().updateDocument(birthday);
+        assertEquals("2017-06-04T03:02:01.00Z", birthday.getPropertyValue("bd:date"));
+    }
+
+    /**
+     * Dates can only be handled as {@link java.lang.String}. Otherwise, exception should be raised.
+     *
+     * @see #itCanHandleDateAsString
+     */
+    @Test
+    public void itCannotHandleDateByDefault() {
+        Document birthday = new Document("Tom's Birthday", "Birthday");
+
+        GregorianCalendar calendar = new GregorianCalendar(2017, Calendar.MAY, 4, 3, 2, 1);
+        try {
+            birthday.set("bd:date", calendar);
+            fail();
+        } catch (IllegalArgumentException e) {
+            // ok
+        }
+
+        Date date = new Date(System.currentTimeMillis());
+        try {
+            birthday.set("bd:date", date);
+            fail();
+        } catch (IllegalArgumentException e) {
+            // ok
+        }
     }
 
     @Test
