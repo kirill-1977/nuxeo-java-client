@@ -209,6 +209,13 @@ document.set("dc:title", "new title");
 document = nuxeoClient.repository().createDocumentByPath("/folder_1", document);
 ```
 
+When handling date object, such as `java.util.Date` or `java.util.Calendar`, it should be converted to string as ISO
+8601 date format "yyyy-MM-dd'T'HH:mm:ss.SSX" before calling `Document#set(String, Object)`. Otherwise, an exception will
+be thrown by the document. If you try to set / reset the document properties using `Document#setProperties(Map)`, we
+don't have any check for its date objects and these dates won't be created / updated correctly after the exchange with
+Nuxeo Server. So, to ensure the correctness of date handling, please always convert date to ISO 8601 date format before
+using Nuxeo Java Client.
+
 ```java
 // Update a document
 Document document = nuxeoClient.repository().fetchDocumentByPath("/folder_1/note_0");
