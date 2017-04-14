@@ -40,6 +40,7 @@ import org.nuxeo.client.api.objects.upload.BatchUpload;
 import org.nuxeo.client.api.objects.user.UserManager;
 import org.nuxeo.client.internals.spi.auth.BasicAuthInterceptor;
 
+import org.nuxeo.client.internals.spi.auth.TokenAuthInterceptor;
 import retrofit2.Retrofit;
 
 /**
@@ -77,6 +78,31 @@ public class NuxeoClient implements Client {
         if (okhttpBuilder.interceptors().isEmpty()) {
             if (userName != null && password != null) {
                 setAuthenticationMethod(new BasicAuthInterceptor(userName, password));
+            } else {
+                throw new NuxeoClientException("Define credentials");
+            }
+        }
+        // retrofit builder
+        converterFactory = NuxeoConverterFactory.create();
+        retrofitBuilder = new Retrofit.Builder().baseUrl(url + ConstantsV1.API_PATH).addConverterFactory(
+                converterFactory);
+        // client builder
+        retrofit();
+        // nuxeo builders
+        automation = new Operation(this);
+        repository = new Repository(this);
+        userManager = new UserManager(this);
+        directoryManager = new DirectoryManager(this);
+        batchUpload = new BatchUpload(this);
+        taskManager = new TaskManager(this);
+    }
+
+    public NuxeoClient(String url, String token) {
+        // okhttp builder
+        okhttpBuilder = new OkHttpClient.Builder();
+        if (okhttpBuilder.interceptors().isEmpty()) {
+            if (token != null) {
+                setAuthenticationMethod(new TokenAuthInterceptor(token));
             } else {
                 throw new NuxeoClientException("Define credentials");
             }
