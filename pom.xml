@@ -85,7 +85,6 @@
 
   <modules>
     <module>nuxeo-java-client</module>
-    <module>nuxeo-java-client-test</module>
   </modules>
 
   <properties>
